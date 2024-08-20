@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Markdown 生成器</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="mb-4">Markdown 生成器</h1>
+
+      <div class="mb-3">
+        <label for="classification" class="form-label">議題分類:</label>
+        <select id="classification" class="form-select">
+          <option value="">選擇分類</option>
+          <option value="UI">UI</option>
+          <option value="ENV">ENV</option>
+          <option value="SPEC">SPEC</option>
+          <option value="Content">Content</option>
+          <option value="Performance">Performance</option>
+          <option value="Functionality">Functionality</option>
+          <option value="MultiLanguage">MultiLanguage</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <div>回歸問題:</div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="regression_issue"
+          />
+          <label class="form-check-label" for="regression_issue"> 是 </label>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="prediction_result" class="form-label">期待結果:</label>
+        <textarea
+          class="form-control"
+          id="prediction_result"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="environment_type" class="form-label">環境類型:</label>
+        <select id="environment_type" class="form-select">
+          <option value="">選擇環境類型</option>
+          <option value="SIT">SIT</option>
+          <option value="UAT">UAT</option>
+          <option value="PRO">PRO</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="environment_url" class="form-label">環境網址:</label>
+        <input type="text" class="form-control" id="environment_url" />
+      </div>
+
+      <div class="mb-3">
+        <label for="chrome_version" class="form-label">Chrome 版本:</label>
+        <input type="text" class="form-control" id="chrome_version" />
+      </div>
+
+      <div class="mb-3">
+        <label for="operating_system" class="form-label">作業系統:</label>
+        <input type="text" class="form-control" id="operating_system" />
+      </div>
+
+      <div class="mb-3">
+        <label for="serial_number" class="form-label">序號(SN):</label>
+        <input type="text" class="form-control" id="serial_number" />
+      </div>
+
+      <div class="mb-3">
+        <label for="build_version" class="form-label">Build Version:</label>
+        <input type="text" class="form-control" id="build_version" />
+      </div>
+
+      <div class="mb-3">
+        <label for="prerequisites" class="form-label">前置條件:</label>
+        <textarea class="form-control" id="prerequisites" rows="4"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="reproduction_steps" class="form-label">重現步驟:</label>
+        <textarea
+          class="form-control"
+          id="reproduction_steps"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="recovery_method" class="form-label">復原方法:</label>
+        <textarea class="form-control" id="recovery_method" rows="4"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="additional_info" class="form-label">附加資訊:</label>
+        <input type="text" class="form-control" id="additional_info" />
+      </div>
+
+      <div class="mb-3">
+        <label for="test_case" class="form-label">測試案例:</label>
+        <input type="text" class="form-control" id="test_case" />
+      </div>
+
+      <div id="specifications">
+        <div class="mb-3 specification-entry">
+          <label class="form-label">規格名稱:</label>
+          <input type="text" class="form-control spec_name" />
+          <label class="form-label mt-2">參考連結:</label>
+          <input type="text" class="form-control source_url" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          onclick="addSpecification()"
+        >
+          新增規格與參考連結
+        </button>
+      </div>
+
+      <div class="mb-3">
+        <label for="log_info" class="form-label">日誌:</label>
+        <textarea class="form-control" id="log_info" rows="4"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <button class="btn btn-primary" onclick="generateMarkdown()">
+          生成並複製到剪貼簿
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function addSpecification() {
+        const specContainer = document.getElementById('specifications');
+        const newSpecEntry = document.createElement('div');
+        newSpecEntry.className = 'mb-3 specification-entry';
+        newSpecEntry.innerHTML = `
+                <label class="form-label">規格名稱:</label>
+                <input type="text" class="form-control spec_name">
+                <label class="form-label mt-2">參考連結:</label>
+                <input type="text" class="form-control source_url">
+            `;
+        specContainer.appendChild(newSpecEntry);
+      }
+
+      function generateMarkdown() {
+        const classification =
+          document.getElementById('classification').value || 'N/A';
+        const regression_issue = document.getElementById('regression_issue')
+          .checked
+          ? 'Y'
+          : 'N';
+        const prediction_result =
+          document.getElementById('prediction_result').value.trim() || 'N/A';
+        const environment_type =
+          document.getElementById('environment_type').value || 'N/A';
+        const environment_url =
+          document.getElementById('environment_url').value || 'N/A';
+        const chrome_version =
+          document.getElementById('chrome_version').value || 'N/A';
+        const operating_system =
+          document.getElementById('operating_system').value || 'N/A';
+        const serial_number =
+          document.getElementById('serial_number').value || 'N/A';
+        const build_version =
+          document.getElementById('build_version').value || 'N/A';
+        const prerequisites =
+          document.getElementById('prerequisites').value.trim() || 'N/A';
+        const reproduction_steps =
+          document.getElementById('reproduction_steps').value.trim() || 'N/A';
+        const recovery_method =
+          document.getElementById('recovery_method').value.trim() || 'N/A';
+        const additional_info =
+          document.getElementById('additional_info').value || 'N/A';
+        const test_case = document.getElementById('test_case').value || 'N/A';
+
+        // 修正後的 specEntries 和模板組合部分
+        let specEntries = '';
+        document.querySelectorAll('.specification-entry').forEach((entry) => {
+          const spec_name = entry.querySelector('.spec_name').value || 'N/A';
+          const source_url = entry.querySelector('.source_url').value || 'N/A';
+          specEntries += `- [${spec_name}](${source_url})\n`;
+        });
+
+        // 移除 specEntries 末尾多餘的換行符
+        specEntries = specEntries.trim();
+
+        const log_info =
+          document.getElementById('log_info').value.trim() || 'N/A';
+
+        const markdown_template = `
+## 問題分類 （Description）
+- 初步分類 (Classification)：${classification}
+- 回歸問題 (Regression issue)：${regression_issue}
+## 期待結果（Prediction of result）：
+\`\`\`
+${prediction_result}
+\`\`\`
+## 測試環境（Test Environment）：
+- 環境類型：${environment_type} (${environment_url})
+- 瀏覽器版本：Google Chrome：${chrome_version}
+- 作業系統：${operating_system}
+- 序號(SN)：${serial_number}
+- Build Version：${build_version}
+- 前置條件:
+${prerequisites}
+## 重現步驟（Step to reproduce）：
+${reproduction_steps}
+## 記錄資訊（Log info）：
+- 復原方法 (Recovery Method)：${recovery_method}
+- 附加資訊 (Additional info)：${additional_info}
+- 測試案例 (Test Case)：${test_case}
+- 參考規格 (Source URL)：${specEntries ? `\n${specEntries}` : 'N/A'}
+- 日誌 (Log)：
+${log_info}
+    `;
+
+        navigator.clipboard
+          .writeText(markdown_template)
+          .then(() => {
+            alert('Markdown 內容已複製到剪貼簿！');
+          })
+          .catch((err) => {
+            alert('無法複製內容到剪貼簿');
+          });
+      }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
