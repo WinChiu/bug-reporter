@@ -114,9 +114,9 @@
 
       <div id="specifications">
         <div class="mb-3 specification-entry">
-          <label class="form-label">規格名稱:</label>
+          <label class="form-label">規格名稱 1:</label>
           <input type="text" class="form-control spec_name" />
-          <label class="form-label mt-2">規格連結:</label>
+          <label class="form-label mt-2">規格連結 1:</label>
           <input type="text" class="form-control source_url" />
         </div>
       </div>
@@ -128,6 +128,14 @@
           onclick="addSpecification()"
         >
           新增規格與參考連結
+        </button>
+        <button
+          type="button"
+          id="removeSpecBtn"
+          class="btn btn-danger"
+          onclick="removeSpecification()"
+        >
+          刪除最後一組
         </button>
       </div>
 
@@ -144,17 +152,35 @@
     </div>
 
     <script>
+      let specCount = 1;
+
+      function updateRemoveButtonState() {
+        const removeButton = document.getElementById('removeSpecBtn');
+        removeButton.disabled = specCount === 1;
+      }
+
       function addSpecification() {
+        specCount++;
         const specContainer = document.getElementById('specifications');
         const newSpecEntry = document.createElement('div');
         newSpecEntry.className = 'mb-3 specification-entry';
         newSpecEntry.innerHTML = `
-                <label class="form-label">規格名稱:</label>
+                <label class="form-label">規格名稱 ${specCount}:</label>
                 <input type="text" class="form-control spec_name">
-                <label class="form-label mt-2">參考連結:</label>
+                <label class="form-label mt-2">規格連結 ${specCount}:</label>
                 <input type="text" class="form-control source_url">
             `;
         specContainer.appendChild(newSpecEntry);
+        updateRemoveButtonState();
+      }
+
+      function removeSpecification() {
+        if (specCount > 1) {
+          const specContainer = document.getElementById('specifications');
+          specContainer.removeChild(specContainer.lastElementChild);
+          specCount--;
+          updateRemoveButtonState();
+        }
       }
 
       function generateMarkdown() {
@@ -188,16 +214,17 @@
           document.getElementById('additional_info').value || 'N/A';
         const test_case = document.getElementById('test_case').value || 'N/A';
 
-        // 修正後的 specEntries 和模板組合部分
+        // 生成 specEntries，去除多餘的換行符
         let specEntries = '';
-        document.querySelectorAll('.specification-entry').forEach((entry) => {
-          const spec_name = entry.querySelector('.spec_name').value || 'N/A';
-          const source_url = entry.querySelector('.source_url').value || 'N/A';
-          specEntries += `- [${spec_name}](${source_url})\n`;
-        });
-
-        // 移除 specEntries 末尾多餘的換行符
-        specEntries = specEntries.trim();
+        document
+          .querySelectorAll('.specification-entry')
+          .forEach((entry, index) => {
+            const spec_name = entry.querySelector('.spec_name').value || 'N/A';
+            const source_url =
+              entry.querySelector('.source_url').value || 'N/A';
+            specEntries += `${index + 1}. [${spec_name}](${source_url})\n`;
+          });
+        specEntries = specEntries.trim(); // 去除多餘的換行符
 
         const log_info =
           document.getElementById('log_info').value.trim() || 'N/A';
@@ -227,7 +254,7 @@ ${reproduction_steps}
 - 參考規格 (Source URL)：${specEntries ? `\n${specEntries}` : 'N/A'}
 - 日誌 (Log)：
 ${log_info}
-    `;
+            `;
 
         navigator.clipboard
           .writeText(markdown_template)
@@ -238,6 +265,9 @@ ${log_info}
             alert('無法複製內容到剪貼簿');
           });
       }
+
+      // 初始化，確保刪除按鈕在最初只有一個規格時禁用
+      updateRemoveButtonState();
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
