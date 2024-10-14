@@ -90,6 +90,10 @@ label {
   <body>
     <div class="container mt-5">
       <h1 class="mb-4">Gitlab Bug Issue Reporter (SPM)</h1>
+      <div class="mb-4 text-center">
+        <input type="text" id="issueNumber" class="form-control d-inline-block" style="width: 200px;" placeholder="輸入議題編號">
+        <button class="btn btn-primary ms-2" onclick="openIssue()">前往</button>
+      </div>
       <div class="mb-3">
         <label for="classification" class="form-label">議題分類:</label>
         <select id="classification" class="form-select">
@@ -229,6 +233,16 @@ label {
     </div>
 
     <script>
+      function openIssue() {
+        const issueNumber = document.getElementById('issueNumber').value;
+        if (issueNumber) {
+          const url = `http://10.10.15.53/software_division/web/keepwell/-/issues/${issueNumber}`;
+          window.open(url, '_blank');
+        } else {
+          alert('請輸入議題編號');
+        }
+      }
+      
       let specCount = 1;
 
       function updateRemoveButtonState() {
