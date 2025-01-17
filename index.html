@@ -10,88 +10,93 @@
     />
     <style>
       body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f4f9;
-  color: #333;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
 
-.container {
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  max-width: 800px;
-  width: 100%;
-  box-sizing: border-box;
-}
+      .container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        max-width: 800px;
+        width: 100%;
+        box-sizing: border-box;
+      }
 
-h1 {
-  color: #555;
-  font-weight: 700;
-  text-align: center;
-}
+      h1 {
+        color: #555;
+        font-weight: 700;
+        text-align: center;
+      }
 
-label {
-  color: #666;
-  font-weight: 600;
-}
+      label {
+        color: #666;
+        font-weight: 600;
+      }
 
-.form-control,
-.form-select {
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  transition: border-color 0.3s ease;
-}
+      .form-control,
+      .form-select {
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        transition: border-color 0.3s ease;
+      }
 
-.form-control:focus,
-.form-select:focus {
-  border-color: #007bff;
-  outline: none;
-}
+      .form-control:focus,
+      .form-select:focus {
+        border-color: #007bff;
+        outline: none;
+      }
 
-.btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
 
-.btn-primary:hover {
-  background-color: #0056b3;
-  border-color: #0056b3;
-}
+      .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+      }
 
-.btn-secondary,
-.btn-danger {
-  border-radius: 5px;
-  margin-right: 10px;
-}
+      .btn-secondary,
+      .btn-danger {
+        border-radius: 5px;
+        margin-right: 10px;
+      }
 
-#specifications {
-  margin-bottom: 15px;
-}
+      #specifications {
+        margin-bottom: 15px;
+      }
 
-#removeSpecBtn:disabled {
-  opacity: 0.5;
-}
-
+      #removeSpecBtn:disabled {
+        opacity: 0.5;
+      }
     </style>
   </head>
   <body>
     <div class="container mt-5">
       <h1 class="mb-4">Gitlab Bug Issue Reporter (SPM)</h1>
       <div class="mb-4 text-center">
-        <input type="text" id="issueNumber" class="form-control d-inline-block" style="width: 200px;" placeholder="輸入議題編號">
+        <input
+          type="text"
+          id="issueNumber"
+          class="form-control d-inline-block"
+          style="width: 200px"
+          placeholder="輸入議題編號"
+        />
         <button class="btn btn-primary ms-2" onclick="openIssue()">前往</button>
       </div>
       <div class="mb-3">
@@ -242,7 +247,7 @@ label {
           alert('請輸入議題編號');
         }
       }
-      
+
       let specCount = 1;
 
       function updateRemoveButtonState() {
