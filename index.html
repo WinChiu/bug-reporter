@@ -642,14 +642,14 @@
           issueCreatedResponse.textContent = `議題建立成功: #${result.iid}`;
           setTimeout(() => {
             issueCreatedResponse.textContent = '';
-          }, 500);
+          }, 3000);
         } catch (error) {
           document.getElementById('create-issue').disabled = false;
           issueCreatedResponse.classList.add('text-danger');
           issueCreatedResponse.textContent = `議題建立失敗: ${error.message}`;
           setTimeout(() => {
             issueCreatedResponse.textContent = '';
-          }, 500);
+          }, 5000);
         }
       };
 
