@@ -37,6 +37,9 @@
       .hide {
         display: none;
       }
+      .specInput {
+        margin-bottom: 16px;
+      }
     </style>
   </head>
   <body>
@@ -463,15 +466,15 @@
         const newRow = document.createElement('div');
         newRow.classList.add('row', 'align-items-center', '.spec-row');
         newRow.innerHTML = `
-                                  <div class="col-3">
+                                  <div class="col-3 specInput">
                                     <label class="form-label">規格名稱</label>
                                     <input type="text" class="form-control spec_name" required/>
                                   </div>
-                                  <div class="col-8">
+                                  <div class="col-8 specInput">
                                     <label class="form-label">規格連結</label>
                                     <input type="text" class="form-control source_url" required/>
                                   </div>
-                                  <div class="col-1 mt-4">
+                                  <div class="col-1 mt-4 specInput">
                                     <button type="button" class="btn btn-primary btn-sm" onclick="deleteRow(event)">
                                       <i class="bi bi-trash"></i>
                                     </button>
