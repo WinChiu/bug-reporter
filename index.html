@@ -228,23 +228,7 @@
         <hr />
       </h4>
       <div id="specifications">
-        <div class="mb-4 specification-entry">
-          <!-- <div class="row align-items-center spec-row">
-            <div class="col-3">
-              <label class="form-label">規格名稱</label>
-              <input type="text" class="form-control spec_name" required/>
-            </div>
-            <div class="col-8">
-              <label class="form-label">規格連結</label>
-              <input type="text" class="form-control source_url" required/>
-            </div>
-            <div class="col-1 mt-4">
-              <button type="button" class="btn btn-primary btn-sm">
-                <i class="bi bi-trash"></i>
-              </button>
-            </div>
-          </div> -->
-        </div>
+        <div class="mb-4 specification-entry"></div>
       </div>
       <div class="mb-4">
         <button
@@ -304,12 +288,11 @@
       let token = null;
       let gitlabUrl = null;
       let projectId = null;
+      const tokenAddResponse = document.getElementById('add-token-response');
       document
         .getElementById('login-form')
         .addEventListener('submit', async (event) => {
           event.preventDefault(); // 阻止表單提交
-          const tokenAddResponse =
-            document.getElementById('add-token-response');
           tokenAddResponse.classList.remove('text-danger');
           tokenAddResponse.textContent = '認證中';
           document.getElementById('add-token').disabled = true;
@@ -323,48 +306,43 @@
             gitlabUrl = document.getElementById('gitlab_url').value;
             projectId = document.getElementById('project_id').value;
             const validateToken = async () => {
-              const token =
-                personalTokenInput.value === ''
-                  ? null
-                  : personalTokenInput.value;
-              const response = await fetch(`${gitlabUrl}/api/v4/projects`, {
-                method: 'GET',
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  'Content-Type': 'application/json',
-                },
-              });
-              if (response.status === 401) {
-                tokenAddResponse.classList.add('text-danger');
-                tokenAddResponse.textContent = '無效 Token';
-                document.getElementById('add-token').disabled = false;
-                throw new Error('Failed to validate token');
-              } else {
-                return token;
-              }
-            };
-            const validateProject = async () => {
-              const response = await fetch(
-                `${gitlabUrl}/api/v4/projects/${projectId}`,
-                {
+              token = personalTokenInput.value;
+              try {
+                const response = await fetch(`${gitlabUrl}/api/v4/projects`, {
                   method: 'GET',
                   headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                   },
-                }
-              );
-              console.log(response);
-              if (!response.ok) {
+                });
+                if (response.ok) return token;
+                throw new Error('無效 Token');
+              } catch (error) {
                 tokenAddResponse.classList.add('text-danger');
-                tokenAddResponse.textContent = '無效專案 ID';
+                tokenAddResponse.textContent = error.message;
                 document.getElementById('add-token').disabled = false;
-                throw new Error('Failed to validate project');
-              } else {
-                personalTokenInput.setCustomValidity('');
-                document.getElementById('login-form').classList.add('hide');
-                document.getElementById('my-form').classList.remove('hide');
-                return projectId;
+                return false;
+              }
+            };
+            const validateProject = async () => {
+              try {
+                const response = await fetch(
+                  `${gitlabUrl}/api/v4/projects/${projectId}`,
+                  {
+                    method: 'GET',
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      'Content-Type': 'application/json',
+                    },
+                  }
+                );
+                if (response.ok) return projectId;
+                throw new Error('無效專案 ID');
+              } catch (error) {
+                tokenAddResponse.classList.add('text-danger');
+                tokenAddResponse.textContent = error.message;
+                document.getElementById('add-token').disabled = false;
+                return false;
               }
             };
             const fetchProjectDetails = async () => {
@@ -443,15 +421,17 @@
                 console.error('Error:', error);
               }
             };
-            const tokenPromise = validateToken();
-            const projectIDPromise = validateProject();
-            token = await tokenPromise;
-            projectId = await projectIDPromise;
-            // 替換為你的專案 ID
-            apiUrl = `${gitlabUrl}/api/v4/projects/${projectId}/issues`;
-            membersApiUrl = `${gitlabUrl}/api/v4/projects/${projectId}/members/all`;
-            labelsApiUrl = `${gitlabUrl}/api/v4/projects/${projectId}/labels?per_page=100`;
-            fetchProjectDetails();
+
+            if (await validateToken()) {
+              if (await validateProject()) {
+                apiUrl = `${gitlabUrl}/api/v4/projects/${projectId}/issues`;
+                membersApiUrl = `${gitlabUrl}/api/v4/projects/${projectId}/members/all`;
+                labelsApiUrl = `${gitlabUrl}/api/v4/projects/${projectId}/labels?per_page=100`;
+                await fetchProjectDetails();
+                document.getElementById('login-form').classList.add('hide');
+                document.getElementById('my-form').classList.remove('hide');
+              }
+            }
           }
         });
 
